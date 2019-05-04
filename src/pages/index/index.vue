@@ -1,6 +1,6 @@
 <template>
 	<view class="nav-list">
-		<view @tap="handleNavigatorTap(item)" hover-class="none" :class="`bg-${item.color}`" class="radius shadow-blur nav-navigator padding"
+		<view @tap="handleNavigatorTap(item)" hover-class="none" :class="'bg-' + item.color" class="radius shadow-blur nav-navigator padding"
 		 v-for="(item) in elements" :key="item.title">
 			<view class="nav-info">
 				<view class="nav-title">{{item.title}}</view>
@@ -8,6 +8,7 @@
 			</view>
 			<image :src="`../../static/svg/${item.image}.svg`"></image>
 		</view>
+		<button type="primary" @tap="handelTempDeleteUserInfo">清空缓存</button>
 	</view>
 </template>
 
@@ -55,6 +56,9 @@
 						url
 					})
 				}
+			},
+			handelTempDeleteUserInfo() {
+				uni.setStorage({key: 'user', data: null})
 			}
 		},
 	}

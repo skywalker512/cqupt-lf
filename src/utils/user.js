@@ -1,17 +1,30 @@
 import showError from '@/utils/showError'
 
 export const getUser = () => {
-	return new Promise(async (reslove, reject) => {
-		const [error, res] = await uni.getStorage({key: 'user'})
-		if (!error) reslove(res.data)
-		else reject(res.errMsg)
+	return new Promise((reslove, reject) => {
+		uni.getStorage({
+			key: 'user',
+			success(res) {
+        reslove(res.data)
+			},
+			fail(e) {
+				reslove(null)
+			}
+		})
 	})
 }
 
 export const setUser = info => {
-	return new Promise(async (reslove, reject) => {
-		const [error, res] = await uni.setStorage({key: 'user', data: info})
-		if (!error) reslove(res.data)
-		else reject(res.errMsg)
+	return new Promise((reslove, reject) => {
+		uni.setStorage({
+			key: 'user',
+			data: info,
+			success(res) {
+			  reslove(res)
+			},
+			fail(e) {
+				showError(e)
+			}
+		})
 	})
 }

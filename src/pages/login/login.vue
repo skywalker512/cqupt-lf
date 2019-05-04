@@ -80,7 +80,7 @@
 						// cardInfo: null,
 					})
 					uni.redirectTo({
-						url: this.$route.query.callback
+						url: this.$mp.query.callback
 					})
 				}
 			}
