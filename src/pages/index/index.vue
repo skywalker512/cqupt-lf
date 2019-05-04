@@ -23,7 +23,7 @@
 	}
 </script>
 
-<style>
+<style lang="less">
 	.content {
 		text-align: center;
 		height: 400upx;
