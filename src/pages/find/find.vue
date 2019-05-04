@@ -1,28 +1,14 @@
 <template>
 	<view class="padding-top">
 		<form>
-			<view v-if="imgList.length === 0">
+			<view>
 				<view class="cu-bar bg-white">
 					<view class="action">
-						图像识别
+						拾到卡片
 					</view>
 				</view>
-				<Ocr @ocrFininshed="handelOcrFininshed"/>
-			</view>
-			<view v-else>
-				<view class="cu-bar bg-white">
-					<view class="action">
-						卡片信息
-					</view>
-				</view>
-				<view class="bg-white card-info flex flex-direction">
-					<view class="stu-number">2018210022</view>
-					<view class="stu-info flex flex-direction">
-						<text>姓名：侯真泓</text>
-						<text>学院：通信与信息工程学院</text>
-						<text>统一识别码：1673345</text>
-					</view>
-				</view>
+				<Ocr @ocrFininshed="handelOcrFininshed" v-if="imgList.length === 0" />
+				<CardInfo :propsCardInfo="cardInfo" v-else />
 			</view>
 			<view class="cu-form-group margin-top">
 				<view class="title">位置</view>
@@ -42,27 +28,37 @@
 
 <script>
 	import Ocr from '@/component/ocr/ocr'
+	import CardInfo from '@/component/cardInfo/cardInfo'
+	import {
+		address
+	} from '@/utils/commonData'
 	export default {
 		data() {
 			return {
 				imgList: [],
 				index: 0,
-				picker: ['通信与信息工程学院', '计算机科学与技术学院', '自动化学院'],
+				picker: address,
+				cardInfo: {
+					name: '侯真泓',
+					department: 0,
+					stuNum: 2018210022,
+					stuId: 1673345,
+				}
 			};
 		},
 		components: {
-			Ocr
+			Ocr,
+			CardInfo,
 		},
 		methods: {
 			handelOcrFininshed(e) {
 				this.imgList = [...e]
 			},
 			handelPickerChange(e) {
-				console.log(this.index, e.detail.value)
 				this.index = e.detail.value
 			},
 			async handelSubmit() {
-				if(this.imgList.length === 0) {
+				if (this.imgList.length === 0) {
 					uni.showToast({
 						icon: 'none',
 						title: '请先扫描校园卡',
@@ -79,20 +75,25 @@
 		height: 200upx;
 		margin: 0 0 20upx 0;
 	}
+
 	button {
 		width: 100%;
 	}
+
 	.card-info {
 		padding: 0 0 30upx 30upx;
+
 		.stu-number {
 			font-weight: bold;
 			font-size: 32upx;
 		}
+
 		.stu-info {
 			padding-top: 10upx;
 		}
 	}
+
 	.text-gray {
-		padding: 15upx 0 0 30upx; 
+		padding: 15upx 0 0 30upx;
 	}
 </style>
