@@ -17,7 +17,8 @@
 					sourceType: ['camera'], //从相册选择
 				})
 				if (!err) {
-					this.$emit('ocrFininshed', res.tempFiles)
+					console.log(res)
+					this.$emit('ocrFininshed', res.tempFilePaths)
 				} else {
 					uni.showToast({
 						icon: 'none',

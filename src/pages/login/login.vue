@@ -3,10 +3,10 @@
 		<view class="login-bg">
 			<view class="login-card">
 				<view class="cu-form-group">
-					<input type="number" placeholder="请输入您的手机号" @blur="handelPhoneInput" />
+					<input type="number" placeholder="请输入您的手机号" v-model="phoneNum" />
 				</view>
 				<view class="cu-form-group">
-					<input placeholder="请输入您获取的验证码" type="number" @blur="handelVerificationCodeInput" />
+					<input placeholder="请输入您获取的验证码" type="number" v-model="verificationCode" />
 					<button class='cu-btn bg-green shadow' @tap="handelVerificationCodeTap" v-if="verificationCodeTime === 60">获取验证码</button>
 					<button class='cu-btn bg-green shadow' v-else>还有 {{verificationCodeTime}} 秒</button>
 				</view>
@@ -31,8 +31,8 @@
 	export default {
 		data() {
 			return {
-				phoneNum: 0,
-				verificationCode: 0,
+				phoneNum: null,
+				verificationCode: null,
 				verificationCodeTime: 60,
 			}
 		},
@@ -53,12 +53,6 @@
 						}, 1000)
 					}
 				}
-			},
-			handelPhoneInput(e) {
-				this.phoneNum = e.detail.value
-			},
-			handelVerificationCodeInput(e) {
-				this.verificationCode = e.detail.value
 			},
 			async handelSubmit() {
 				if (!phonePattern.test(this.phoneNum) || !verificationCodePattern.test(this.verificationCode)) {
