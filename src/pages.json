@@ -3,7 +3,9 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "uni-app"
+				"navigationBarTitleText": "重邮拾物",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3366ff"
 			}
 		}
 	],
