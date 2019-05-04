@@ -24,6 +24,11 @@
 			"style": {
 				"navigationBarTitleText": "添加拾到卡片"
 			}
+		}, {
+			"path": "pages/info/info",
+			"style": {
+				"navigationBarTitleText": "我的信息"
+			}
 		}
 	],
 	"globalStyle": {

@@ -1,6 +1,6 @@
 <template>
 	<view class="padding-top">
-		<form @submit="handelFormSubmit">
+		<form @submit="handelFormSubmit" v-if="!user.cardInfo">
 			<view class="cu-form-group">
 				<view class="title">姓名</view>
 				<input placeholder="请输入您的姓名" name="name" />
@@ -23,17 +23,44 @@
 				<button class="cu-btn bg-blue lg" form-type="submit">提交</button>
 			</view>
 		</form>
+		<view v-else>
+			<view class="cu-bar bg-white">
+				<view class="action">
+					我的卡片
+				</view>
+			</view>
+			<CardInfo :propsCardInfo="user.cardInfo"/>
+			<view class="padding">
+				<button class="cu-btn bg-blue lg">提交</button>
+			</view>
+		</view>
 	</view>
 </template>
 
 <script>
-	import { stuNumPattern } from '@/utils/pattern'
+	import {
+		stuNumPattern
+	} from '@/utils/pattern'
+	import {
+		getUser
+	} from '@/utils/user'
+	import {
+		department
+	} from '@/utils/commonData'
+	import CardInfo from '@/component/cardInfo/cardInfo'
 	export default {
 		data() {
 			return {
 				index: 0,
-				picker: ['通信与信息工程学院', '计算机科学与技术学院', '自动化学院'],
+				picker: department,
+				user: {},
 			}
+		},
+		components: {
+			CardInfo
+		},
+		async onLoad() {
+			this.user = await getUser()
 		},
 		methods: {
 			handelPickerChange(e) {
@@ -54,8 +81,5 @@
 <style lang="less">
 	button {
 		width: 100%;
-	}
-	.text-gray {
-		padding: 15upx 0 0 30upx; 
 	}
 </style>
