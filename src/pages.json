@@ -7,11 +7,21 @@
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#3366ff"
 			}
+		}, {
+			"path": "pages/lost/lost",
+			"style": {}
+		}, {
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录 / 注册",
+				"navigationBarTextStyle": "white",
+				"navigationBarBackgroundColor": "#3366ff"
+			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "重邮拾物",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
 	}
