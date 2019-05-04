@@ -3,7 +3,7 @@
 		<view class="login-bg">
 			<view class="login-card">
 				<view class="cu-form-group">
-					<input type="number" placeholder="请输入您的手机号" @blur="handelPhoneInput"/>
+					<input type="number" placeholder="请输入您的手机号" @blur="handelPhoneInput" />
 				</view>
 				<view class="cu-form-group">
 					<input placeholder="请输入您获取的验证码" type="number" @blur="handelVerificationCodeInput"></input>
@@ -21,8 +21,13 @@
 </template>
 
 <script>
-	import { phonePattern, verificationCodePattern } from '@/utils/pattern'
-	import { setUser } from '@/utils/user'
+	import {
+		phonePattern,
+		verificationCodePattern
+	} from '@/utils/pattern'
+	import {
+		setUser
+	} from '@/utils/user'
 	export default {
 		data() {
 			return {
@@ -63,7 +68,16 @@
 					})
 				} else {
 					await setUser({
-						name: 'test'
+						userInfo: {
+							phoneNum: 18523890371
+						},
+						cardInfo: {
+							name: '侯真泓',
+							department: 0,
+							stuNum: 2018210022,
+							stuId: 1673345,
+						}
+						// cardInfo: null,
 					})
 					uni.redirectTo({
 						url: this.$route.query.callback
