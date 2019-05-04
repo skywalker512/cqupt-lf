@@ -6,7 +6,7 @@
 					<input type="number" placeholder="请输入您的手机号" @blur="handelPhoneInput" />
 				</view>
 				<view class="cu-form-group">
-					<input placeholder="请输入您获取的验证码" type="number" @blur="handelVerificationCodeInput"></input>
+					<input placeholder="请输入您获取的验证码" type="number" @blur="handelVerificationCodeInput" />
 					<button class='cu-btn bg-green shadow' @tap="handelVerificationCodeTap" v-if="verificationCodeTime === 60">获取验证码</button>
 					<button class='cu-btn bg-green shadow' v-else>还有 {{verificationCodeTime}} 秒</button>
 				</view>
