@@ -26,6 +26,8 @@
     "@dcloudio/uni-mp-baidu": "*",
     "@dcloudio/uni-mp-toutiao": "*",
     "@dcloudio/uni-mp-weixin": "*",
+    "@sentry/browser": "^5.1.2",
+    "@sentry/integrations": "^5.1.2",
     "flyio": "^0.6.2",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",
