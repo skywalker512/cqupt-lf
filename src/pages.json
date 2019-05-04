@@ -9,7 +9,9 @@
 			}
 		}, {
 			"path": "pages/lost/lost",
-			"style": {}
+			"style": {
+				"navigationBarTitleText": "添加丢失卡片"
+			}
 		}, {
 			"path": "pages/login/login",
 			"style": {
