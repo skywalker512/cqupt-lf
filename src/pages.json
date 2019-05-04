@@ -19,6 +19,11 @@
 				"navigationBarTextStyle": "white",
 				"navigationBarBackgroundColor": "#3366ff"
 			}
+		}, {
+			"path": "pages/find/find",
+			"style": {
+				"navigationBarTitleText": "添加拾到卡片"
+			}
 		}
 	],
 	"globalStyle": {

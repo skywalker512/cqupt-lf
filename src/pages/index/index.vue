@@ -28,14 +28,14 @@
 					{
 						title: '我拾到了卡',
 						decs: '点击即可登记拾卡信息',
-						url: 'find/index',
+						url: 'find/find',
 						image: '302',
 						color: 'gradual-orange',
 					},
 					{
 						title: '我的信息',
 						decs: '点击即可查看个人信息',
-						url: 'info/index',
+						url: 'info/info',
 						image: '200',
 						color: 'gradual-purple',
 					},
