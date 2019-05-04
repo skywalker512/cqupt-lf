@@ -7,9 +7,7 @@
 						图像识别
 					</view>
 				</view>
-				<view class="cu-form-group padding flex justify-center" @tap="handelChooseImage">
-					<image src="../../static/svg/ocr.svg"></image>
-				</view>
+				<Ocr @ocrFininshed="handelOcrFininshed"/>
 			</view>
 			<view v-else>
 				<view class="cu-bar bg-white">
@@ -43,6 +41,7 @@
 </template>
 
 <script>
+	import Ocr from '@/component/ocr/ocr'
 	export default {
 		data() {
 			return {
@@ -51,16 +50,12 @@
 				picker: ['通信与信息工程学院', '计算机科学与技术学院', '自动化学院'],
 			};
 		},
+		components: {
+			Ocr
+		},
 		methods: {
-			handelChooseImage() {
-				uni.chooseImage({
-					count: 1, //默认9
-					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
-					sourceType: ['camera'], //从相册选择
-					success: (res) => {
-						this.imgList = [...res.tempFiles]
-					}
-				});
+			handelOcrFininshed(e) {
+				this.imgList = [...e]
 			},
 			handelPickerChange(e) {
 				console.log(this.index, e.detail.value)
