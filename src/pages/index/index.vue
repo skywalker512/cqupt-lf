@@ -46,8 +46,8 @@
 		methods: {
 			async handleNavigatorTap(item) {
 				const url = `/pages/${item.url}`
-				const userInfo = await getUser()
-				if (!userInfo) {
+				const user = await getUser()
+				if (!user || user.tokenInfo.expiresIn < Math.round(new Date().getTime()/1000)) {
 					uni.navigateTo({
 						url: `/pages/login/login?callback=${url}`
 					})
