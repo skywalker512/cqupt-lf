@@ -28,22 +28,39 @@
 	import {
 		setUser
 	} from '@/utils/user'
+
+	import User from '@/store/models/user.js'
 	export default {
 		data() {
 			return {
-				phoneNum: null,
-				verificationCode: null,
+				phoneNum: undefined,
+				verificationCode: undefined,
 				verificationCodeTime: 60,
 			}
 		},
 		methods: {
-			handelVerificationCodeTap() {
-				if (!phonePattern.test(this.phoneNum)) {
+			async handelVerificationCodeTap() {
+				if (!phonePattern.test(this.phoneNum) && this.verificationCodeTime === 60) {
 					uni.showToast({
 						icon: 'none',
 						title: '请输入正确的手机号',
 					})
 				} else {
+					if (this.verificationCodeTime === 60) {
+						const sendCode =
+							`query {
+								sendCode(mobile: "${this.phoneNum}") {
+									code
+									message
+								}
+							}`
+						const res = await this.fetch(sendCode)
+						console.log(res)
+						uni.showToast({
+							icon: 'none',
+							title: res.data.data.sendCode.message || '验证码发送成功!',
+						})
+					}
 					if (this.verificationCodeTime === 0) {
 						this.verificationCodeTime = 60
 					} else {
@@ -61,6 +78,23 @@
 						title: '请输入正确的信息',
 					})
 				} else {
+					const loginQuery =
+						`query Login {
+							login(mobile: "${this.phoneNum}", code: "${this.verificationCode}") {
+								result{
+									user{
+										id
+										mobile
+									}
+									tokenInfo {
+										accessToken
+										expiresIn
+									}
+								}
+							}
+						}`
+					const result = await this.fetch(loginQuery)
+					console.log(result)
 					await setUser({
 						userInfo: {
 							phoneNum: 18523890371
@@ -73,6 +107,14 @@
 						}
 						// cardInfo: null,
 					})
+					User.create({
+						data: {
+							id: 1,
+							mobile: '3333',
+						}
+					})
+					const allUser = User.all();
+					console.log(allUser);
 					uni.redirectTo({
 						url: this.$mp.query.callback
 					})

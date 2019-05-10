@@ -28,6 +28,7 @@
     "@dcloudio/uni-mp-weixin": "*",
     "@sentry/browser": "^5.1.2",
     "@sentry/integrations": "^5.1.2",
+    "@vuex-orm/core": "^0.31.9",
     "flyio": "^0.6.2",
     "less": "^3.9.0",
     "less-loader": "^5.0.0",

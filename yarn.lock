@@ -1096,6 +1096,11 @@
   resolved "https://registry.npm.taobao.org/@vue/web-component-wrapper/download/@vue/web-component-wrapper-1.2.0.tgz#bb0e46f1585a7e289b4ee6067dcc5a6ae62f1dd1"
   integrity sha1-uw5G8VhafiibTuYGfcxaauYvHdE=
 
+"@vuex-orm/core@^0.31.9":
+  version "0.31.9"
+  resolved "https://registry.npm.taobao.org/@vuex-orm/core/download/@vuex-orm/core-0.31.9.tgz#654c7afe58460da8d3f9cac4954c1abb0241faf8"
+  integrity sha1-ZUx6/lhGDajT+crElUwauwJB+vg=
+
 "@webassemblyjs/ast@1.7.11":
   version "1.7.11"
   resolved "https://registry.npm.taobao.org/@webassemblyjs/ast/download/@webassemblyjs/ast-1.7.11.tgz#b988582cafbb2b095e8b556526f30c90d057cace"
