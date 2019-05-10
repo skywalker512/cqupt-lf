@@ -35,7 +35,7 @@ export default {
 						uni.hideLoading();
 					}
 					if (res.statusCode === 200 && !res.data.errors) {
-						resolve(res)
+						resolve(res.data.data)
 					} else if (res.statusCode == 404) {
 						if (ShowMsg) {
 							uni.showToast({
