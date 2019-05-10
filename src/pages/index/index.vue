@@ -57,8 +57,17 @@
 					})
 				}
 			},
-			handelTempDeleteUserInfo() {
+			async handelTempDeleteUserInfo() {
 				uni.setStorage({key: 'user', data: null})
+				// const sendCode =
+				// 	`query {
+				// 		sendCode(mobile: "${this.mobile}") {
+				// 			code
+				// 			message
+				// 		}
+				// 	}`
+				// const res = await this.fetch(sendCode)
+				// console.log(res)
 			}
 		},
 	}

@@ -1,3 +1,5 @@
+import { getUser } from '@/utils/user'
+
 export default {
 	fetch(query, pram = {}, url = 'http://localhost:3000/graphql', Methods = 'POST', CheckToken = false, ShowLoading = true, ShowMsg = true) {
 		if (query) {
@@ -13,16 +15,21 @@ export default {
 			pram.token = store.state.$globalData.$userinfo.token;
 		}
 		// #ifdef MP-WEIXIN	
-		pram.client_type = 'wx';
+		pram.clientType = 'wx';
 		// #endif
 		// #ifdef APP-PLUS
-		pram.client_type = 'app';
+		pram.clientType = 'app';
 		// #endif
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
+			const user = await getUser()
+			const accessToken = user && user.tokenInfo.accessToken
 			uni.request({
 				url: url,
 				data: pram,
 				method: Methods,
+				header: {
+					authorization: `Bearer ${accessToken}`
+				},
 				success(res) {
 					if (ShowLoading) {
 						uni.hideLoading();
@@ -48,9 +55,8 @@ export default {
 						reject(res)
 					} else {
 						if (ShowMsg) {
-							console.log(res.data.errors[0].extensions.exception.details)
 							uni.showToast({
-								title: res.data.errors[0].extensions.exception.details || '未知错误请稍后重试',
+								title: res.data.errors[0].extensions.exception.details || res.data.errors[0].message || '未知错误请稍后重试',
 								icon: 'none'
 							})
 						}

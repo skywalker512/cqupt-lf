@@ -3,7 +3,7 @@
 		<view class="login-bg">
 			<view class="login-card">
 				<view class="cu-form-group">
-					<input type="number" placeholder="请输入您的手机号" v-model="phoneNum" />
+					<input type="number" placeholder="请输入您的手机号" v-model="mobile" />
 				</view>
 				<view class="cu-form-group">
 					<input placeholder="请输入您获取的验证码" type="number" v-model="verificationCode" />
@@ -33,14 +33,14 @@
 	export default {
 		data() {
 			return {
-				phoneNum: undefined,
+				mobile: undefined,
 				verificationCode: undefined,
 				verificationCodeTime: 60,
 			}
 		},
 		methods: {
 			async handelVerificationCodeTap() {
-				if (!phonePattern.test(this.phoneNum) && this.verificationCodeTime === 60) {
+				if (!phonePattern.test(this.mobile) && this.verificationCodeTime === 60) {
 					uni.showToast({
 						icon: 'none',
 						title: '请输入正确的手机号',
@@ -49,13 +49,12 @@
 					if (this.verificationCodeTime === 60) {
 						const sendCode =
 							`query {
-								sendCode(mobile: "${this.phoneNum}") {
+								sendCode(mobile: "${this.mobile}") {
 									code
 									message
 								}
 							}`
 						const res = await this.fetch(sendCode)
-						console.log(res)
 						uni.showToast({
 							icon: 'none',
 							title: res.data.data.sendCode.message || '验证码发送成功!',
@@ -72,7 +71,7 @@
 				}
 			},
 			async handelSubmit() {
-				if (!phonePattern.test(this.phoneNum) || !verificationCodePattern.test(this.verificationCode)) {
+				if (!phonePattern.test(this.mobile) || !verificationCodePattern.test(this.verificationCode)) {
 					uni.showToast({
 						icon: 'none',
 						title: '请输入正确的信息',
@@ -80,7 +79,7 @@
 				} else {
 					const loginQuery =
 						`query Login {
-							login(mobile: "${this.phoneNum}", code: "${this.verificationCode}") {
+							login(mobile: "${this.mobile}", code: "${this.verificationCode}") {
 								result{
 									user{
 										id
@@ -93,28 +92,14 @@
 								}
 							}
 						}`
-					const result = await this.fetch(loginQuery)
-					console.log(result)
-					await setUser({
-						userInfo: {
-							phoneNum: 18523890371
-						},
-						cardInfo: {
-							name: '侯真泓',
-							department: 0,
-							stuNum: 2018210022,
-							stuId: 1673345,
-						}
-						// cardInfo: null,
-					})
-					User.create({
-						data: {
-							id: 1,
-							mobile: '3333',
-						}
-					})
-					const allUser = User.all();
-					console.log(allUser);
+					const res = await this.fetch(loginQuery)
+					const result = res.data.data.login.result
+					await setUser({...result, cardInfo: {
+						name: '侯真泓',
+						department: 0,
+						stuNum: 2018210022,
+						stuId: 1673345,
+					}})
 					uni.redirectTo({
 						url: this.$mp.query.callback
 					})
