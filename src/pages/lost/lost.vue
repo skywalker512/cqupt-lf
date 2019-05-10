@@ -12,7 +12,7 @@
 			<view class="text-gray">我们将用该信息作为您校园卡的唯一凭证</view>
 			<view class="cu-form-group margin-top">
 				<view class="title">学院</view>
-				<picker @change="handelPickerChange" :value="index" :range="picker">
+				<picker @change="handelPickerChange" :value="index" :range="picker" v-if="picker">
 					<view class="picker">
 						{{picker[index]}}
 					</view>
@@ -44,15 +44,13 @@
 	import {
 		getUser
 	} from '@/utils/user'
-	import {
-		department
-	} from '@/utils/commonData'
+	import Department from '@/store/models/user.js'
 	import CardInfo from '@/component/cardInfo/cardInfo'
 	export default {
 		data() {
 			return {
 				index: 0,
-				picker: department,
+				picker: undefined,
 				user: {},
 			}
 		},
@@ -60,7 +58,8 @@
 			CardInfo
 		},
 		async onLoad() {
-			this.user = await getUser()
+			// this.user = await getUser()
+			await this.fetchDepartmentData()
 		},
 		methods: {
 			handelPickerChange(e) {
@@ -73,13 +72,35 @@
 						title: '请输入正确的学号',
 					})
 				}
+			},
+			async fetchDepartmentData() {
+				let result = uni.getStorageSync('department')
+				if (!result) {
+					const quary = `
+						query {
+							findAllDepartments {
+								result {
+									id
+									name
+								}
+							}
+						}
+					`
+					const res = await this.fetch(quary)
+					result = res.findAllDepartments.result
+					uni.setStorageSync('department', result)
+				}
+				this.picker = result.map(item=>item.name)
 			}
-		}
+		},
 	}
 </script>
 
 <style lang="less">
 	button {
 		width: 100%;
+	}
+	.text-gray {
+		padding: 15upx 0 0 30upx;
 	}
 </style>
