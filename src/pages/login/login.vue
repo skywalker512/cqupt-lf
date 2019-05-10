@@ -25,9 +25,6 @@
 		phonePattern,
 		verificationCodePattern
 	} from '@/utils/pattern'
-	import {
-		setUser
-	} from '@/utils/user'
 
 	import User from '@/store/models/user.js'
 	export default {
@@ -93,8 +90,8 @@
 							}
 						}`
 					const res = await this.fetch(loginQuery)
-					const result = res.data.data.login.result
-					await setUser({...result, cardInfo: {
+					const result = res.login.result
+					uni.setStorageSync('user', {...result, cardInfo: {
 						name: '侯真泓',
 						department: 0,
 						stuNum: 2018210022,
