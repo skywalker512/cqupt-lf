@@ -1,16 +1,26 @@
 import { getUser } from '@/utils/user'
 
 export default {
-	fetch(query, pram = {}, url = 'http://localhost:3000/graphql', Methods = 'POST', CheckToken = false, ShowLoading = true, ShowMsg = true) {
+	fetch(query, pram = {}, option, url = 'http://localhost:3000/graphql', Methods = 'POST') {
+		const normal = {
+			CheckToken: false,
+			ShowLoading: true,
+			ShowMsg: true,
+			ignoreError: false,
+		}
+		option = {
+			...normal,
+			...option,
+		}
 		if (query) {
 			pram.query = query
 		}
-		if (ShowLoading) {
+		if (option.ShowLoading) {
 			uni.showLoading({
 				title: '请稍候...'
 			})
 		}
-		if (CheckToken) {
+		if (option.CheckToken) {
 			this.CheckToken()
 			pram.token = store.state.$globalData.$userinfo.token;
 		}
@@ -31,13 +41,13 @@ export default {
 					authorization: `Bearer ${accessToken}`
 				},
 				success(res) {
-					if (ShowLoading) {
+					if (option.ShowLoading) {
 						uni.hideLoading();
 					}
-					if (res.statusCode === 200 && !res.data.errors) {
+					if ((res.statusCode === 200 && !res.data.errors) || option.ignoreError) {
 						resolve(res.data.data)
 					} else if (res.statusCode == 404) {
-						if (ShowMsg) {
+						if (option.ShowMsg) {
 							uni.showToast({
 								title: res.data.errors[0].extensions.exception.details || '访问的资源不存在',
 								icon: 'none'
@@ -46,7 +56,7 @@ export default {
 						reject(res)
 					}
 					else if (res.statusCode == 500) {
-						if (ShowMsg) {
+						if (option.ShowMsg) {
 							uni.showToast({
 								title: res.data.errors[0].extensions.exception.details || '服务器异常请稍后再试',
 								icon: 'none'
@@ -54,7 +64,7 @@ export default {
 						}
 						reject(res)
 					} else {
-						if (ShowMsg) {
+						if (option.ShowMsg) {
 							uni.showToast({
 								title: res.data.errors[0].extensions.exception.details || res.data.errors[0].message || '未知错误请稍后重试',
 								icon: 'none'
@@ -64,10 +74,10 @@ export default {
 					}
 				},
 				fail(res) {
-					if (ShowLoading) {
+					if (option.ShowLoading) {
 						uni.hideLoading();
 					}
-					if (ShowMsg) {
+					if (option.ShowMsg) {
 						uni.showToast({
 							title: '请求失败',
 							icon: 'none'

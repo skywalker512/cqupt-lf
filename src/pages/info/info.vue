@@ -5,7 +5,7 @@
 				我的卡片
 			</view>
 		</view>
-		<CardInfo :propsCardInfo="user.cardInfo" v-if="user.cardInfo" />
+		<CardInfo :propsCardInfo="card" v-if="card" />
 		<Ocr @ocrFininshed="handelOcrFininshed" v-else />
 	</view>
 </template>
@@ -16,15 +16,37 @@
 	} from '@/utils/user'
 	import Ocr from '@/component/ocr/ocr'
 	import CardInfo from '@/component/cardInfo/cardInfo'
+	import Card from '@/store/models/card'
 	export default {
 		data() {
 			return {
 				imgList: [],
-				user: {},
+				card: undefined,
 			};
 		},
 		async onLoad() {
-			this.user = await getUser()
+			const user = await getUser()
+			const findOneCardRes = await this.fetch(`
+				query {
+					findOneCard(userId: "${user.user.id}") {
+						code
+						message
+						card {
+							stuId
+							stuNum
+							name
+							department {
+								name
+								id
+							}
+						}
+					}
+				}
+			`, {}, {ignoreError: true})
+			if (findOneCardRes.findOneCard) {
+				Card.create({data: {...findOneCardRes.findOneCard.card, id: findOneCardRes.findOneCard.card.stuNum} })
+			}
+			this.card = findOneCardRes.findOneCard.card
 		},
 		components: {
 			Ocr,

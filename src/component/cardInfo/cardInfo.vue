@@ -3,23 +3,19 @@
 		<view class="stu-number">{{cardInfo.stuNum}}</view>
 		<view class="stu-info flex flex-direction">
 			<text>姓名：{{cardInfo.name}}</text>
-			<text>学院：{{department[cardInfo.department]}}</text>
-			<text>统一识别码：{{cardInfo.stuId}}</text>
+			<text>学院：{{cardInfo.department.name}}</text>
+			<text v-if="cardInfo.stuId">统一识别码：{{cardInfo.stuId}}</text>
 		</view>
 	</view>
 </template>
 
 
 <script>
-	import {
-		department
-	} from '@/utils/commonData'
 	export default {
 		props: ['propsCardInfo'],
 		data() {
 			return {
 				cardInfo: this.propsCardInfo,
-				department
 			}
 		},
 	}

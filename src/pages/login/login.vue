@@ -54,7 +54,7 @@
 						const res = await this.fetch(sendCode)
 						uni.showToast({
 							icon: 'none',
-							title: res.data.data.sendCode.message || '验证码发送成功!',
+							title: res.sendCode.message || '验证码发送成功!',
 						})
 					}
 					if (this.verificationCodeTime === 0) {
@@ -75,28 +75,23 @@
 					})
 				} else {
 					const loginQuery =
-						`query Login {
-							login(mobile: "${this.mobile}", code: "${this.verificationCode}") {
-								result{
-									user{
-										id
-										mobile
-									}
-									tokenInfo {
-										accessToken
-										expiresIn
-									}
+						`query {
+							login(code: "${this.verificationCode}", mobile: "${this.mobile}" ) {
+								user {
+									mobile
+									id
+									createdAt
+									updatedAt
+								}
+								tokenInfo {
+									accessToken
+									expiresIn
 								}
 							}
 						}`
-					const res = await this.fetch(loginQuery)
-					const result = res.login.result
-					uni.setStorageSync('user', {...result, cardInfo: {
-						name: '侯真泓',
-						department: 0,
-						stuNum: 2018210022,
-						stuId: 1673345,
-					}})
+					const loginRes = await this.fetch(loginQuery)
+					const loginResult = loginRes.login
+					uni.setStorageSync('user', loginResult)
 					uni.redirectTo({
 						url: this.$mp.query.callback
 					})

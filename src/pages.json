@@ -23,6 +23,16 @@
 			"style": {
 				"navigationBarTitleText": "我的信息"
 			}
+		}, {
+			"path": "pages/card/card",
+			"style": {
+				"navigationBarTitleText": "卡片详情"
+			}
+		}, {
+			"path":"pages/find/location",
+			"style": {
+				"navigationBarTitleText":"地点选择"
+			}
 		}
 	],
 	"globalStyle": {

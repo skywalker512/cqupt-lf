@@ -1,6 +1,6 @@
 <template>
 	<view class="padding-top">
-		<form @submit="handelFormSubmit" v-if="!user.cardInfo">
+		<form @submit="handelFormSubmit" v-if="!card">
 			<view class="cu-form-group">
 				<view class="title">姓名</view>
 				<input placeholder="请输入您的姓名" name="name" />
@@ -29,9 +29,9 @@
 					我的卡片
 				</view>
 			</view>
-			<CardInfo :propsCardInfo="user.cardInfo"/>
+			<CardInfo :propsCardInfo="card"/>
 			<view class="padding">
-				<button class="cu-btn bg-blue lg">提交</button>
+				<button @tap="handelUserCardLostSubmit" class="cu-btn bg-blue lg">提交</button>
 			</view>
 		</view>
 	</view>
@@ -46,24 +46,96 @@
 	} from '@/utils/user'
 	import Department from '@/store/models/user.js'
 	import CardInfo from '@/component/cardInfo/cardInfo'
+	import Card from '@/store/models/card'
 	export default {
 		data() {
 			return {
 				index: 0,
 				picker: undefined,
-				user: {},
+				card: undefined,
 			}
 		},
 		components: {
 			CardInfo
 		},
 		async onLoad() {
-			// this.user = await getUser()
-			await this.fetchDepartmentData()
+			const user = uni.getStorageSync('user')
+			const findOneCardRes = await this.fetch(`
+				query {
+					findOneCard(userId: "${user.user.id}") {
+						code
+						message
+						card {
+							stuId
+							stuNum
+							name
+							department {
+								name
+								id
+							}
+						}
+					}
+				}
+			`, {}, {ignoreError: true})
+			if (findOneCardRes.findOneCard) {
+				Card.create({data: {...findOneCardRes.findOneCard.card, id: findOneCardRes.findOneCard.card.stuNum} })
+				const findCardStatusRes = await this.fetch(`
+					query {
+						findCardStatus(userId: "${user.user.id}") {
+							code
+							message
+							card {
+								status
+								lostAt
+								foundAt
+								foundLocation {
+									id
+									name
+								}
+							}
+						}
+					}
+				`)
+				Card.update({
+					id: findOneCardRes.findOneCard.card.stuNum,
+					status: findCardStatusRes.findCardStatus.card,
+				})
+				if (findCardStatusRes.findCardStatus.code !== 2003){
+					uni.redirectTo({
+						url: `/pages/card/card?stuNum=${findOneCardRes.findOneCard.card.stuNum}`
+					})
+				} else {
+					this.card = findOneCardRes.findOneCard.card
+				}
+			} else {
+				await this.fetchDepartmentData()
+			}
 		},
 		methods: {
 			handelPickerChange(e) {
 				this.index = e.detail.value
+			},
+			async handelUserCardLostSubmit(e) {
+				const changeCardStatusRes = await this.fetch(`
+					mutation {
+						changeCardStatus(stuNum: "${this.card.stuNum}", status: "lost") {
+							code
+							message
+							card {
+								status
+								lostAt
+								foundAt
+							}
+						}
+					}
+				`)
+				Card.update({
+					id: this.card.stuNum,
+					status: changeCardStatusRes.changeCardStatus.card,
+				})
+				uni.redirectTo({
+					url: `/pages/card/card?stuNum=${this.card.stuNum}`
+				})
 			},
 			async handelFormSubmit(e) {
 				if (!stuNumPattern.test(e.detail.value.stuNum)) {
@@ -71,6 +143,86 @@
 						icon: 'none',
 						title: '请输入正确的学号',
 					})
+				} else {
+					const { stuNum, name } = e.detail.value
+					const departments = uni.getStorageSync('department')
+					const departmentId = departments[this.index].id
+					const user  = uni.getStorageSync('user')
+					const mutation = `
+						mutation {
+							creatCard(
+								stuNum: "${stuNum}", 
+								userId:"${user.user.id}",
+								name:"${name}",
+								departmentId:"${departmentId}",
+							) {
+								code
+								message
+								card {
+									name
+									stuId
+									createdAt
+									updatedAt
+									stuNum
+									department {
+										name
+										id
+									}
+								}
+							}
+						}
+					`
+					const creatCardRes = await this.fetch(mutation)
+					if (creatCardRes.creatCard) {
+						Card.create({data: {...creatCardRes.creatCard.card, id: creatCardRes.creatCard.card.stuNum} })
+						const findCardStatusRes = await this.fetch(`
+							query {
+								findCardStatus(userId: "${user.user.id}") {
+									code
+									message
+									card {
+										status
+										lostAt
+										foundAt
+										foundLocation {
+											id
+											name
+										}
+									}
+								}
+							}
+						`)
+						Card.update({
+							id: creatCardRes.creatCard.card.stuNum,
+							status: findCardStatusRes.findCardStatus.card,
+						})
+						if (findCardStatusRes.findCardStatus.code !== 2003){
+							uni.redirectTo({
+								url: `/pages/card/card?stuNum=${creatCardRes.creatCard.card.stuNum}`
+							})
+						} else {
+							const changeCardStatusRes = await this.fetch(`
+								mutation {
+									changeCardStatus(stuNum: "${creatCardRes.creatCard.card.stuNum}", status: "lost") {
+										code
+										message
+										card {
+											status
+											lostAt
+											foundAt
+										}
+									}
+								}
+							`)
+							Card.update({
+								id: creatCardRes.creatCard.card.stuNum,
+								status: changeCardStatusRes.changeCardStatus.card,
+							})
+							uni.redirectTo({
+								url: `/pages/card/card?stuNum=${creatCardRes.creatCard.card.stuNum}`
+							})
+						}
+					}
 				}
 			},
 			async fetchDepartmentData() {
@@ -79,7 +231,7 @@
 					const quary = `
 						query {
 							findAllDepartments {
-								result {
+								departments {
 									id
 									name
 								}
@@ -87,7 +239,7 @@
 						}
 					`
 					const res = await this.fetch(quary)
-					result = res.findAllDepartments.result
+					result = res.findAllDepartments.departments
 					uni.setStorageSync('department', result)
 				}
 				this.picker = result.map(item=>item.name)
