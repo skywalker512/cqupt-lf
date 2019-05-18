@@ -51,6 +51,7 @@
 		address
 	} from '@/utils/commonData'
 	import Location from '@/store/models/location.js'
+	import fetchJsonp from 'fetch-jsonp'
 	export default {
 		data() {
 			return {
@@ -58,6 +59,9 @@
 				departmentIndex: 0,
 				department: [],
 				cardInfo: {
+					name: undefined,
+					stuId: undefined,
+					stuNum: undefined,
 					department: {}
 				},
 				showCardInfo: false,
@@ -65,11 +69,19 @@
 			};
 		},
 		async onLoad() {
+			// #ifdef MP-ALIPAY
+			this.showCardInfo = true
+			// #endif
+			// #ifdef H5
+			this.showCardInfo = true
+			// #endif
 			await this.fetchDepartmentData()
 		},
 		onShow() {
-			const name = Location.query().first().name
-			if (name) this.location = name
+			const location = Location.query().first()
+			if(location) {
+				this.location = location.name
+			}
 		},
 		components: {
 			Ocr,
@@ -86,7 +98,8 @@
 				uni.showLoading({
 					title: '加载中'
 				})
-				const base64 = wx.getFileSystemManager().readFileSync(this.imgList[0], "base64")
+				let base64
+				base64 = wx.getFileSystemManager().readFileSync(this.imgList[0], "base64")
 				const [error, res] = await uni.request({
 					url: '',
 					method: 'POST',
