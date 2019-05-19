@@ -22,7 +22,7 @@
 				</view>
 				<view class="cu-form-group">
 					<view class="title">学院</view>
-					<picker @change="handelDepartmentPickerChange" :value="departmentIndex" :range="department" v-if="department">
+					<picker @change="handelDepartmentPickerChange" :value="departmentIndex" :range="department" v-if="department.length !== 0">
 						<view class="picker">
 							{{department[departmentIndex]}}
 						</view>
@@ -51,7 +51,6 @@
 		address
 	} from '@/utils/commonData'
 	import Location from '@/store/models/location.js'
-	import fetchJsonp from 'fetch-jsonp'
 	export default {
 		data() {
 			return {
@@ -100,15 +99,22 @@
 				})
 				let base64
 				base64 = wx.getFileSystemManager().readFileSync(this.imgList[0], "base64")
+				const getOcrTokenRes = await this.fetch(`
+					query {
+						getOcrToken {
+							accessToken
+						}
+					}
+				`)			
 				const [error, res] = await uni.request({
-					url: '',
+					url: `https://aip.baidubce.com/rest/2.0/ocr/v1/general_basic?access_token=${getOcrTokenRes.getOcrToken.accessToken}`,
 					method: 'POST',
 					data: {
 						image: base64,
 						detect_direction: true,
 					},
 					header: {
-						'content-type': 'application/x-www-form-urlencoded'
+						'content-type': 'application/x-www-form-urlencoded',
 					},
 				});
 				res.data.words_result.forEach(item => {
@@ -185,6 +191,7 @@
 							url: '/pages/index/index'
 						})
 					}, 1500)
+					Location.deleteAll()
 				}
 			},
 			async fetchDepartmentData() {
