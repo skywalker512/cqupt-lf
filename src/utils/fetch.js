@@ -1,7 +1,7 @@
 import { getUser } from '@/utils/user'
 
 export default {
-	fetch(query, pram = {}, option, url = 'http://localhost:3000/graphql', Methods = 'POST') {
+	fetch(query, pram = {}, option, url = 'https://lfapi.atowerlight.cn/graphql', Methods = 'POST') {
 		const normal = {
 			CheckToken: false,
 			ShowLoading: true,

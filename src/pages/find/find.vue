@@ -74,6 +74,9 @@
 			// #ifdef H5
 			this.showCardInfo = true
 			// #endif
+			// #ifdef APP-PLUS
+			this.showCardInfo = true
+			// #endif
 			await this.fetchDepartmentData()
 		},
 		onShow() {
