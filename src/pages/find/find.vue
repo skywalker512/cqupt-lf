@@ -141,10 +141,15 @@
 				this.departmentIndex = e.detail.value
 			},
 			async handelSubmit() {
-				if (this.imgList.length === 0) {
+				if (this.showCardInfo === false) {
 					uni.showToast({
 						icon: 'none',
-						title: '请先扫描校园卡',
+						title: '请先填写信息',
+					})
+				} else if (this.location === '请点击以选择') {
+					uni.showToast({
+						icon: 'none',
+						title: '请选择拾到位置',
 					})
 				} else {
 					const departments = uni.getStorageSync('department')
