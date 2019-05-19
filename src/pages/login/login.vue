@@ -46,7 +46,7 @@
 					if (this.verificationCodeTime === 60) {
 						const sendCode =
 							`query {
-								sendCode(mobile: "${this.mobile}") {
+								sendVerifyCode(mobile: "${this.mobile}") {
 									code
 									message
 								}
@@ -54,7 +54,7 @@
 						const res = await this.fetch(sendCode)
 						uni.showToast({
 							icon: 'none',
-							title: res.sendCode.message || '验证码发送成功!',
+							title: res.sendVerifyCode.message || '验证码发送成功!',
 						})
 					}
 					if (this.verificationCodeTime === 0) {
